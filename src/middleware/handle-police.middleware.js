@@ -12,6 +12,9 @@ function handlePolicies(policies) {
             if (!userJWT && policies.includes("pswRecover")) {
                 return next()
             }
+            if (!userJWT && policies.includes("public")) {
+                return next()
+            }
             if (!userJWT) {
                 return res.status(401).send({message: "denied access, invalid token"});
             }

@@ -42,7 +42,7 @@ export default class SessionController {
                 return res.cookie("cookieToken", token, {
                     maxAge:60*60*1000,
                     httpOnly: true
-                }).redirect('/views/home');
+                }).redirect('/home');
             }
             const userLogin = await this.usersService.loginUser(userSubmitted);
             if (userLogin === "User not found") {
@@ -63,7 +63,7 @@ export default class SessionController {
             res.cookie("cookieToken", token, {
                 maxAge:60*60*1000,
                 httpOnly: true
-            }).redirect('/views/home');
+            }).redirect('/home');
         } catch (error) {
             return res.status(400).json({ message: error.message});
         }
@@ -71,7 +71,7 @@ export default class SessionController {
     logoutUserController = (req, res) => {
         try {
             res.clearCookie("cookieToken");
-            return res.redirect('/views/login');
+            return res.redirect('/login');
         } catch (error) {
             return console.log(error);
         }
@@ -161,7 +161,7 @@ export default class SessionController {
                     return res.cookie("cookieToken", token, {
                         maxAge:60*60*1000,
                         httpOnly: true
-                    }).redirect('/views/home');
+                    }).redirect('/home');
             } else if (user.role == "premium") {
                 const updateUser = await this.usersService.updateUser(uid, { role: "user" })
                 res.clearCookie("cookieToken");
@@ -177,7 +177,7 @@ export default class SessionController {
                     return res.cookie("cookieToken", token, {
                         maxAge:60*60*1000,
                         httpOnly: true
-                    }).redirect('/views/home');
+                    }).redirect('/home');
             } else {
                 return res.json({ message: "Unauthorized to update"})
             }
@@ -205,7 +205,7 @@ export default class SessionController {
                 return res.cookie("cookieToken", token, {
                     maxAge:60*60*1000,
                     httpOnly: true
-                }).redirect('/views/home');
+                }).redirect('/home');
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }

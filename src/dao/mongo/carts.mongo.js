@@ -39,20 +39,25 @@ export default class CartsDao {
             if (cart.products.length === 0) {
                 cart.products.push({product: pid, quantity: quantityProduct});
                 await cart.save();
-                return cart;
+                const cartupdated = await cartModel.findById(cid).populate("products.product");
+                return cartupdated.products
+                //return cart;
             }
             if (cart.products.length > 0) {
                 for (let obj in cart.products) {
                     if (cart.products[obj].product == pid) {
                         cart.products[obj].quantity += parseInt(quantityProduct);
                         await cart.save();
-                        return cart;
+                        const cartupdated = await cartModel.findById(cid).populate("products.product");
+                        return cartupdated.products
+                        //return cart;
                     }
                 }
             }
             cart.products.push({product: pid, quantity: quantityProduct});
-            await cart.save(); 
-            return cart;
+            await cart.save();
+            const cartupdated = await cartModel.findById(cid).populate("products.product");
+            return cartupdated.products
         } catch (error) {
             throw new Error(error);
         }
@@ -67,7 +72,8 @@ export default class CartsDao {
                 if (cart.products[obj].product == pid) {
                     cart.products.splice(obj, 1);
                     await cart.save();
-                    return cart;
+                    const cartUpdate = await cartModel.findById(cid).populate("products.product");
+                    return cartUpdate.products;
                 }
             }
             return "Product not found";
@@ -113,7 +119,8 @@ export default class CartsDao {
                 if (cart.products[obj].product == pid) {
                     cart.products[obj].quantity = quantity;
                     await cart.save();
-                    return cart;
+                    const cartupdated = await cartModel.findById(cid).populate("products.product");
+                    return cartupdated;
                 }
             }
             return "Product not found";

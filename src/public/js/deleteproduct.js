@@ -22,7 +22,7 @@ const deleteProduct = async (pid) => {
         } else {
             alert("Product deleted successfully");
         };
-        window.location.replace("/views/home");
+        window.location.replace("/home");
     } else {
         return alert ("Unauthorized to delete this product");
     }

@@ -65,7 +65,8 @@ export default class ProductsDao {
     updateProductDao = async (pid, product) => {
         try {
             const updateProduct = await productsModel.updateOne({ _id: pid }, product);
-            return updateProduct;
+            const prodUpdated =  await productsModel.findById({_id: pid});
+            return prodUpdated;
         } catch (error) {
             throw new Error("Error updating product");
         }
@@ -73,7 +74,8 @@ export default class ProductsDao {
     deleteProductDao = async (pid) => {
         try {
             const deleteProduct = await productsModel.deleteOne({ _id: pid });
-            return deleteProduct;
+            const resultProducts = await productsModel.find();
+            return resultProducts;
         } catch (error) {
             throw new Error("Error deleting product");
         }

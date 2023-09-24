@@ -71,13 +71,13 @@ export default class ProductsController {
                 return res.json({
                     message: "No product found",
                 })
-            }
+            };
             const product = req.body;
             const updateProduct = await this.productsService.updateProduct(pid, product);
             return res.json({
                 message: "Product updated successfully",
-                //data: updateProduct
-            })
+                data: updateProduct
+            });
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -91,10 +91,10 @@ export default class ProductsController {
                     message: "No product found",
                 })
             }
-            const productDelete = this.productsService.deleteProduct(pid);
+            const productDelete = await this.productsService.deleteProduct(pid);
             return res.json({
                 message: "Product deleted successfully",
-                //data: productDelete
+                data: productDelete
             })
         } catch (error) {
             res.status(400).json({ message: error.message });

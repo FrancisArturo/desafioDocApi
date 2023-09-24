@@ -66,7 +66,7 @@ export default class App {
     }
     initializeRoutes(routes) {
         routes.forEach((route) => {
-            if (route.path === "/views") {
+            if (route.path === "/") {
                 this.app.use(`/` , route.router);
             } else {
                 this.app.use(`/api/${this.API_VERSION}`, route.router);

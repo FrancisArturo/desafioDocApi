@@ -28,6 +28,6 @@ recoverBtn.addEventListener("click", async(e) => {
         return alert("the password must be different from the previous one");
     } else {
         alert("Password update successfully")
-        return window.location.replace("/views/login");
+        return window.location.replace("/login");
     }
 });

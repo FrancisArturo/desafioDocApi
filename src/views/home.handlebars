@@ -7,7 +7,7 @@
     </form>
     {{#unless adminRole}}
         <br>
-        <button type="button"><a href="/views/cart/{{cartId}}">Cart</a></button>
+        <button type="button"><a href="/cart/{{cartId}}">Cart</a></button>
         <br>
     {{/unless}}
     {{#if userRole}}
@@ -21,12 +21,12 @@
     {{/if}}
     {{#unless userRole}}
         <br>
-        <button><a href="/views/addproduct">Add a product</a></button>
+        <button><a href="/addproduct">Add a product</a></button>
         <br>
         <br>
     {{/unless}}
     {{#if adminRole}}
-        <button><a href="/views/updateproduct">Update a product</a></button>
+        <button><a href="/updateproduct">Update a product</a></button>
         <br>
     {{/if}} 
     <h2>Products List</h2>
@@ -87,10 +87,10 @@
     <p>Pagina Actual: {{page}} </p>
 </div>
 {{#if hasPrevPage}}
-    <a href="/views/home?category={{category}}&page={{prevPage}}&limit={{limit}}&sort={{sort}}">Previous</a>
+    <a href="/home?category={{category}}&page={{prevPage}}&limit={{limit}}&sort={{sort}}">Previous</a>
 {{/if}}
 {{#if hasNextPage}}
-    <a href="/views/home?category={{category}}&page={{nextPage}}&limit={{limit}}&sort={{sort}}">Next</a>
+    <a href="/home?category={{category}}&page={{nextPage}}&limit={{limit}}&sort={{sort}}">Next</a>
 {{/if}}
 
 <script src="/js/index.js"></script>

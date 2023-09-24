@@ -9,8 +9,19 @@ export default class ViewsController {
         this.cartsService = CartsService;
         this.usersService = UsersService;
     }
+    defaultViewController = async (req, res) => {
+        if (req.user) {
+            return res.redirect("home");
+        } else {
+            return res.redirect("login");
+        }
+    }
     loginViewController = async (req, res) => {
-        res.render("login");
+        if (req.user) {
+            return res.redirect("home");
+        } else {
+            return res.render("login");
+        }
     }
     registerViewController = async (req, res) => {
         res.render("register");

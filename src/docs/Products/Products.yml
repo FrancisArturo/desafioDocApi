@@ -6,7 +6,7 @@ paths:
         - Products
       responses:
         "200":
-          description: A Message "Products retrieved successfully" and List of all products
+          description: A Message "Products retrieved successfully" and an array of all products in DB
           content: 
             application/json:
               schema:
@@ -22,7 +22,7 @@ paths:
       requestBody:
         required: true
         content:
-          aplication/json:
+          application/json:
             schema:
               $ref: "#components/requestBodies/addProduct"  
       responses:
@@ -61,13 +61,14 @@ paths:
         - Products
       parameters:
         - name: pid
+          in: path
           required: true
           description: ID of a product from DB
           schema:
             $type: ObjectId
       responses:
         "200":
-          description: return a message "Product deleted successfully" 
+          description: return a message "Product deleted successfully" and an array of products in DB
         "400":
           description: error server side
     put:
@@ -76,13 +77,21 @@ paths:
         - Products
       parameters:
         - name: pid
+          in: path
           required: true
           description: ID of a product from DB
           schema:
             $type: ObjectId
+      requestBody:
+        description: product properties to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
       responses:
         "200":
-          description: return a message "Product updated successfully"
+          description: return a message "Product updated successfully" and the product updated
         "400":
           description: error server side
 components:
@@ -162,4 +171,31 @@ components:
         price: 400
         status: true
         stock: 250
-        category: frutas    
+        category: frutas   
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: name of the product          
+        description:
+          type: string
+          description: a description of the product        
+        code:
+          type: number
+          description: code of the product, unique       
+        price:
+          type: number 
+          description: price of the product        
+        status:
+          type: boolean
+          description: status of the product        
+        stock:
+          type: number
+          description: stock of the product        
+        category:
+          type: string
+          description: category of the product 
+      example:
+        description: Product description Modification
+        price: 700
