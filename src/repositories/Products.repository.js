@@ -21,6 +21,10 @@ export default class ProductsRepository {
         let result = await this.dao.getProductByIdDao(pid);
         return result;
     }
+    getProductByTitle = async (product) => {
+        let result = await this.dao.getProductByTitleDao(product);
+        return result;
+    }
     addProduct = async (product) => {
         let result = await this.dao.addProductDao(product);
         return result;

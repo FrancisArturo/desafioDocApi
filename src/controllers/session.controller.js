@@ -15,14 +15,15 @@ export default class SessionController {
 
     createUserController = async (req, res) => {
         try {
-            const newUser = await this.usersService.createUser(req.body);
-            if (newUser === "User already exists") {
+            const userExist = await this.usersService.getUserByEmail(req.body);
+            if (userExist) {
                 return res.status(401).render('register', {error: "User already exists"})
             }
+            const newUser = await this.usersService.createUser(req.body);
             const cartUser = await this.cartsService.addCart();
             const cartUserId = cartUser._id;
-            const addCartUser = await this.usersService.updateUser(newUser._id, {carts : cartUserId })
-            return res.render('register', {RegisterSuccessfully: "User added successfully"})
+            const addCartUser = await this.usersService.updateUser(newUser._id, {carts : cartUserId });
+            return res.render('register', {RegisterSuccessfully: "User added successfully"});
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
@@ -38,28 +39,27 @@ export default class SessionController {
                     role: "admin",
                 };
                 const token = generateJWT({...signUser});
-                console.log(token)
                 return res.cookie("cookieToken", token, {
                     maxAge:60*60*1000,
                     httpOnly: true
                 }).redirect('/home');
             }
-            const userLogin = await this.usersService.loginUser(userSubmitted);
-            if (userLogin === "User not found") {
+            const userExist = await this.usersService.getUserByEmail(userSubmitted);
+            if (!userExist) {
                 return res.status(401).render('login', {error: "User not found"})
             }
-            if (userLogin === "Incorrect password") {
+            const pswControl = await this.usersService.comparePsw(userSubmitted);
+            if (!pswControl) {
                 return res.status(401).render('login', {error: "Incorrect password"})
             }
             const signUser = {
-                user: userLogin._id,
-                firstName: userLogin.firstName,
-                lastName: userLogin.lastName,
-                email: userLogin.email,
-                role: userLogin.role,
+                user: userExist._id,
+                firstName: userExist.firstName,
+                lastName: userExist.lastName,
+                email: userExist.email,
+                role: userExist.role,
             };
             const token = generateJWT({...signUser});
-            //console.log(token)
             res.cookie("cookieToken", token, {
                 maxAge:60*60*1000,
                 httpOnly: true
@@ -88,18 +88,18 @@ export default class SessionController {
 
     recoverPasswordController = async (req, res) => {
         try {
-            const user = await this.usersService.recoverPassword(req.body);
-            if (user === "User not found") {
-                return res.status(400).json({ message: error.message });
+            const userExist = await this.usersService.getUserByEmail(req.body);
+            if (!userExist) {
+                return res.status(400).json({ message: "User not found" });
             }
             const signUser = {
-                email: user.email,
+                email: userExist.email,
                 role: "pswRecover"
             };
             const token = generateJWT({...signUser});
-            const sendEmail = await transporter.sendMail({
+            const sendEmail = transporter.sendMail({
                 from: EMAIL,
-                to: user.email,
+                to: userExist.email,
                 subject: `Recover your password`,
                 html: `
                 <div>
@@ -108,7 +108,7 @@ export default class SessionController {
                         <p>Follow the next link to continue the process</p>
                         <br>
                         <br>  
-                        <a href="http://localhost:8000/views/recover/${token}">CLICK HERE</a>
+                        <a href="http://localhost:8000/recover/${token}">CLICK HERE</a>
                         <br>
                         <br>
                         <p>This link has a duration of 30 min, After this you will have to request a new link</p>
@@ -127,14 +127,21 @@ export default class SessionController {
     }
     recoverCompletePswController = async (req, res) => {
         try {
-            const user = req.user.user.email;
-            const psw = req.body;
-            const updatePsw = await this.usersService.recoverCompletePsw(user, psw.password);
-            if (updatePsw == "the password must be different from the previous one") {
+            const userEmail = req.user.user.email;
+            const psw = req.body.password;
+            const user = {
+                email: userEmail,
+                password: psw
+            }
+            const pswControl = await this.usersService.comparePsw(user);
+            
+            if (pswControl) {
                 return res.status(400).json({ message: "the password must be different from the previous one" });
             }
+            const updatePsw = await this.usersService.recoverCompletePsw(user);
+            const currentUser = new UserDTO(updatePsw)
             res.clearCookie("cookieToken");
-            return res.json({message: "Password update successfully", updatePsw});
+            return res.json({message: "Password update successfully", currentUser});
         } catch (error) {
             
         }

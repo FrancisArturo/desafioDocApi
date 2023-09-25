@@ -12,8 +12,8 @@ export default class viewsRoutes {
     }
 
     initializeRoutes() {
-        this.router.get(`${this.path}`, handlePolicies(["admin", "user", "premium", "public"]), this.viewsController.defaultViewController);
-        this.router.get(`${this.path}login`, handlePolicies(["admin", "user", "premium", "public"]), this.viewsController.loginViewController);
+        this.router.get(`${this.path}`, handlePolicies(["admin", "user", "premium", "public", "pswRecover"]), this.viewsController.defaultViewController);
+        this.router.get(`${this.path}login`, handlePolicies(["admin", "user", "premium", "public", "pswRecover"]), this.viewsController.loginViewController);
         this.router.get(`${this.path}register`, this.viewsController.registerViewController);
         this.router.get (`${this.path}recover`,  this.viewsController.recoverViewController);
         this.router.get (`${this.path}recover/:tid`, handlePolicies(["pswRecover"]), this.viewsController.recoverAuthorizedController);

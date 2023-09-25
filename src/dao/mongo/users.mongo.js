@@ -3,12 +3,26 @@ import { hashPassword, comparePassword } from "../../utils/encrypt.js";
 
 
 export default class UsersDao {
+    
+    getUserByEmailDao = async (user) => {
+        try {
+            const userFound = await userModel.findOne({ email: user.email });
+            return userFound;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    comparePswDao = async (user) => {
+        try {
+            const userFound = await userModel.findOne({ email: user.email });
+            const isMatch = await comparePassword(user.password, userFound.password);
+            return isMatch;    
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
     createUserDao = async (user) => {
         try {
-            const userFound = await userModel.findOne({ email: user.email })
-            if (userFound) {
-                return "User already exists"
-            }
             const pswHashed = await hashPassword(user.password);
             const newUser = {
                 firstName: user.firstName,
@@ -18,7 +32,7 @@ export default class UsersDao {
                 phone: user.phone,
                 age : user.age,
                 role: "user",
-            }
+            };
             const userCreated = await userModel.create(newUser);
             return userCreated;
         } catch (error) {
@@ -26,42 +40,20 @@ export default class UsersDao {
         }
 
     }
-    loginUserDao = async (user) => {
+    recoverPasswordDao = async (user, psw) => {
         try {
             const userFound = await userModel.findOne({ email: user.email });
-            if (!userFound) {
-                return "User not found";
-            }
             const isMatch = await comparePassword(user.password, userFound.password);
-            if (!isMatch) {
-                return "Incorrect password";
-            }
-            return userFound;
+            return isMatch;    
         } catch (error) {
-            throw new Error("logging user error");
+            throw new Error(error);
         }
         
     }
-    recoverPasswordDao = async (user) => {
+    recoverCompletePswDao = async (user) => {
         try {
             const userFound = await userModel.findOne({ email: user.email });
-            if (!userFound) {
-                return "User not found";
-            }
-            return userFound;
-        } catch (error) {
-            throw new Error("password recovery error");
-        }
-        
-    }
-    recoverCompletePswDao = async (email, psw) => {
-        try {
-            const userFound = await userModel.findOne({ email: email });
-            const isMatch = await comparePassword(psw, userFound.password);
-            if (isMatch) {
-                return "the password must be different from the previous one";
-            }
-            const pswHashed = await hashPassword(psw);
+            const pswHashed = await hashPassword(user.password);
             userFound.password = pswHashed;
             await userFound.save();
             return userFound;

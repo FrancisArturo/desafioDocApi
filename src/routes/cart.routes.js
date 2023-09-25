@@ -28,9 +28,6 @@ export default class cartRoutes {
         //update quantity product from cart
         this.router.put(`${this.path}/:cid/products/:pid`, this.cartController.updateProductCartController);
 
-        //update products from cart
-        this.router.put(`${this.path}/:cid`, this.cartController.updateProductsCartController); 
-
         //purchase products from cart
         this.router.get(`${this.path}/:cid/purchase`, handlePolicies(["user", "premium"]), this.cartController.purchaseCartController); 
     }

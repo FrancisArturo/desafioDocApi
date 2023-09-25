@@ -4,7 +4,14 @@ export default class UsersRepository {
     constructor(dao) {
         this.dao = dao;
     }
-
+    getUserByEmail = async (user) => {
+        let result = await this.dao.getUserByEmailDao(user);
+        return result;
+    }
+    comparePsw = async (user) => {
+        let result = await this.dao.comparePswDao(user);
+        return result;
+    }
     createUser = async (user) => {
         let result = await this.dao.createUserDao(user);
         return result;

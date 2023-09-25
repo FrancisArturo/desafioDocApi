@@ -32,7 +32,7 @@ export default class ProductsController {
         try {
             const { pid } = req.params;
             const product = await this.productsService.getProductById(pid);
-            if (product === "No product found") {
+            if (!product) {
                 return res.json({
                     message: "No product found",
                 })
@@ -48,20 +48,20 @@ export default class ProductsController {
     addProductController = async (req, res) => {
         try {
             const { body } = req;
-            const newProduct = await this.productsService.addProduct(body);
-            if (newProduct === "Product already exists") {
+            const checkProduct = await this.productsService.getProductByTitle(body);
+            if (checkProduct) {
                 return res.json({
                     message: "Product already exists",
                 })
-            }
+            };
+            const addProduct = await this.productsService.addProduct(body);
             return res.json({
                 message: "Product added successfully",
-                data: newProduct
-            })
-
+                data: addProduct
+            });
         } catch (error) {
             res.status(400).json({ message: error.message });
-        }
+        };
     }
     updateProductController = async (req, res) => {
         try {
@@ -90,15 +90,15 @@ export default class ProductsController {
                 return res.json({
                     message: "No product found",
                 })
-            }
+            };
             const productDelete = await this.productsService.deleteProduct(pid);
             return res.json({
                 message: "Product deleted successfully",
                 data: productDelete
-            })
+            });
         } catch (error) {
             res.status(400).json({ message: error.message });
-        }
+        };
     }
     
 }

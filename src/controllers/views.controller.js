@@ -11,6 +11,9 @@ export default class ViewsController {
     }
     defaultViewController = async (req, res) => {
         if (req.user) {
+            if (req.user.user.role == "pswRecover"){
+                return res.redirect("login")
+            }
             return res.redirect("home");
         } else {
             return res.redirect("login");
@@ -18,6 +21,9 @@ export default class ViewsController {
     }
     loginViewController = async (req, res) => {
         if (req.user) {
+            if (req.user.user.role == "pswRecover"){
+                return res.render("login")
+            }
             return res.redirect("home");
         } else {
             return res.render("login");
@@ -80,13 +86,13 @@ export default class ViewsController {
     getProductsCartViewController = async (req, res) => {
         try {
             const { cid } = req.params;
-            const cartProducts = await this.cartsService.getProductsCart(cid);
-            if (cartProducts === "Cart does not exist") {
+            const checkCart = await this.cartsService.getCartById(cid);
+            if (!checkCart) {
                 return res.json({
-                    message: "Cart does not exist",
-                    data: cartProducts
+                    message: "Cart not found",
                 })
-            }
+            };
+            const cartProducts = checkCart.products;
             res.render("cart", { cartProducts, cid });
         } catch (error) {
             res.status(400).json({ message: error.message });

@@ -41,20 +41,21 @@ export default class ProductsDao {
     getProductByIdDao = async (pid) => {
         try {
             const product = await productsModel.findById({_id: pid});
-            if (!product) {
-                return ("No product found");
-            }
             return product;
         } catch (error) {
             throw new Error("Error getting product"); 
         }
     }
-    addProductDao = async (product) => {
+    getProductByTitleDao = async (product) => {
         try {
             const checkProduct = await productsModel.findOne({ title: product.title });
-            if (checkProduct) {
-                return ("Product already exists");
-            }
+            return checkProduct;
+        } catch (error) {
+            throw new Error(error); 
+        }
+    }
+    addProductDao = async (product) => {
+        try {
             const newProduct = new productsModel(product);
             await newProduct.save();
             return newProduct;
@@ -64,7 +65,7 @@ export default class ProductsDao {
     }
     updateProductDao = async (pid, product) => {
         try {
-            const updateProduct = await productsModel.updateOne({ _id: pid }, product);
+            await productsModel.updateOne({ _id: pid }, product);
             const prodUpdated =  await productsModel.findById({_id: pid});
             return prodUpdated;
         } catch (error) {
@@ -73,7 +74,7 @@ export default class ProductsDao {
     }
     deleteProductDao = async (pid) => {
         try {
-            const deleteProduct = await productsModel.deleteOne({ _id: pid });
+            await productsModel.deleteOne({ _id: pid });
             const resultProducts = await productsModel.find();
             return resultProducts;
         } catch (error) {
